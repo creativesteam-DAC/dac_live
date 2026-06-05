@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LiveLaunch | Real Estate Booking Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="auth-screen" id="auth-screen">
+      <div class="login-card">
+        <div class="brand login-brand">
+          <span class="brand-mark">L</span>
+          <div>
+            <div class="brand-name">LiveLaunch</div>
+            <div class="brand-subtitle">Secure booking board</div>
+          </div>
+        </div>
+        <p class="eyebrow">SIGN IN</p>
+        <h1 class="login-title">Welcome back</h1>
+        <p class="login-copy">Administrators manage projects and user accounts. Sales users can reserve and book inventory.</p>
+        <form id="login-form">
+          <label class="field"><span>Login ID</span><input name="loginId" autocomplete="username" required /></label>
+          <label class="field"><span>Password</span><input name="password" type="password" autocomplete="current-password" required /></label>
+          <div class="login-error" id="login-error" aria-live="assertive"></div>
+          <button class="primary-btn login-btn" type="submit">Sign In</button>
+        </form>
+        <p class="first-login" id="first-login-hint">First admin login: <strong>admin</strong> / <strong>Admin@123</strong></p>
+      </div>
+    </section>
+    <div class="app-shell locked" id="app-shell">
+      <header class="topbar">
+        <div class="brand">
+  			<img src="DAC.png" alt="DAC Logo" class="logo-img" />
+  				<div class="brand-text">
+    			<div class="brand-subtitle">Visual booking studio</div>
+			</div>
+
+        </div>
+        <nav class="view-switcher" aria-label="Views">
+          <button class="nav-tab active" data-view="inventory">Inventory</button>
+          <button class="nav-tab" data-view="launch">Launch Event</button>
+          <button class="nav-tab" data-view="insights">Insights</button>
+          <button class="nav-tab studio-access" data-view="studio">Creative Studio</button>
+          <button class="nav-tab approval-access" data-view="approvals">Approvals</button>
+          <button class="nav-tab" data-view="history">Creative History</button>
+          <button class="nav-tab admin-only" data-view="admin">Admin</button>
+        </nav>
+        <div class="agent-panel">
+          <label for="project-select">Project</label>
+          <select id="project-select" aria-label="Select project"></select>
+          <span class="account-badge" id="account-badge"></span>
+          <button class="signout-btn" id="logout-button">Log Out</button>
+          <span class="sync-dot" title="Live synchronized"></span>
+          <span class="sync-label">Live</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div>
+            <p class="eyebrow" id="project-phase">NOW BOOKING | PHASE 01</p>
+            <h1 id="project-title">Aurelia <span>Skyline</span></h1>
+            <p class="hero-copy" id="project-description"></p>
+          </div>
+          <div class="metrics" id="metrics" aria-label="Project availability metrics"></div>
+        </section>
+
+        <section class="view active" id="inventory-view">
+          <aside class="filter-card">
+            <div class="card-heading">
+              <h2>Find a home</h2>
+              <button class="text-action" id="clear-filters">Reset</button>
+            </div>
+            <label class="field">
+              <span>Tower</span>
+              <select id="tower-filter"></select>
+            </label>
+            <label class="field">
+              <span>Availability</span>
+              <select id="status-filter">
+                <option value="all">All units</option>
+                <option value="available">Available</option>
+                <option value="held">Reserved</option>
+                <option value="sold">Sold</option>
+                <option value="featured">Featured</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Facing</span>
+              <select id="facing-filter">
+                <option value="all">Any direction</option>
+                <option value="East">East</option>
+                <option value="West">West</option>
+                <option value="North">North</option>
+                <option value="South">South</option>
+                <option value="North-East">North-East</option>
+                <option value="North-West">North-West</option>
+                <option value="South-East">South-East</option>
+                <option value="South-West">South-West</option>
+                <option value="Garden">Garden</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Unit Type</span>
+              <select id="type-filter"></select>
+            </label>
+            <label class="field">
+              <span>Floor</span>
+              <select id="floor-filter"></select>
+            </label>
+            <label class="field">
+              <span>Budget up to <strong id="budget-label">INR 3.20 Cr</strong></span>
+              <input id="budget-filter" type="range" min="110" max="320" value="320" step="5" />
+            </label>
+            <div class="legend">
+              <span><i class="dot available"></i>Available</span>
+              <span><i class="dot held"></i>Reserved</span>
+              <span><i class="dot sold"></i>Sold</span>
+              <span><i class="dot featured"></i>Featured</span>
+            </div>
+            <div class="recommended-card">
+              <p class="eyebrow">SMART MATCH</p>
+              <h3>Recommended units</h3>
+              <div id="recommendations" class="recommendation-list"></div>
+            </div>
+          </aside>
+
+          <div class="inventory-stage">
+            <div class="stage-header">
+              <div>
+                <p class="eyebrow">LIVE MASTER INVENTORY</p>
+                <h2>Select a residence</h2>
+              </div>
+              <div class="stage-actions">
+                <button class="secondary-btn" id="simulate-sale">Simulate Booking</button>
+                <button class="primary-btn" data-open-launch>Open Event Screen</button>
+              </div>
+            </div>
+            <div class="tower-tabs" id="tower-tabs"></div>
+            <div id="tower-grid" class="tower-grid"></div>
+          </div>
+
+          <aside class="unit-panel" id="unit-panel" aria-live="polite"></aside>
+        </section>
+
+        <section class="view launch-view" id="launch-view">
+          <div class="launch-banner">
+            <div>
+              <p class="eyebrow">LIVE SALES COMMAND CENTER</p>
+              <h2 id="launch-project-title">Aurelia Skyline Launch Day</h2>
+            </div>
+            <div class="launch-time" id="launch-clock"></div>
+          </div>
+          <div class="launch-metrics" id="launch-metrics"></div>
+          <div class="launch-layout">
+            <div class="heatmap-card">
+              <div class="card-heading">
+                <h3>Availability Heat Map</h3>
+                <span class="live-pill">LIVE</span>
+              </div>
+              <div class="heatmap-filters">
+                <label>Facing <select id="launch-facing-filter"></select></label>
+                <label>Unit Type <select id="launch-type-filter"></select></label>
+                <label>Floor <select id="launch-floor-filter"></select></label>
+                <label>Max Price <input id="launch-price-filter" type="range" min="0" max="320" value="320" step="5" /></label>
+                <strong id="launch-price-label">INR 3.20 Cr</strong>
+              </div>
+              <div class="heatmap" id="heatmap"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view studio-view" id="studio-view">
+          <div class="studio-grid">
+            <article class="studio-card">
+              <p class="eyebrow">DESIGN TEMPLATE SYSTEM</p>
+              <h2>Creative Studio</h2>
+              <p class="muted">Upload PNG templates, add a customer photo, edit text, and send the creative for approval.</p>
+              <label class="field template-admin-only"><span>Upload PNG Template</span><input id="template-upload" type="file" accept=".png,image/png" /></label>
+              <label class="field"><span>Template</span><select id="template-select"></select></label>
+              <label class="field"><span>Customer Photo</span><input id="customer-photo-upload" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" /></label>
+              <div class="inline-fields">
+                <label class="field"><span>Crop</span><select id="photo-crop"><option>Free Crop</option><option>Square Crop</option><option>Portrait Crop</option></select></label>
+                <label class="field"><span>Zoom</span><input id="photo-zoom" type="range" min="60" max="180" value="100" /></label>
+              </div>
+              <div class="inline-fields">
+                <label class="field"><span>Brightness</span><input id="photo-brightness" type="range" min="50" max="150" value="100" /></label>
+                <label class="field"><span>Contrast</span><input id="photo-contrast" type="range" min="50" max="160" value="100" /></label>
+              </div>
+              <div class="inline-fields">
+                <label class="field"><span>Saturation</span><input id="photo-saturation" type="range" min="0" max="180" value="100" /></label>
+                <label class="field"><span>Rotate</span><input id="photo-rotate" type="range" min="-30" max="30" value="0" /></label>
+              </div>
+              <div class="inline-fields">
+                <label class="field"><span>Move X</span><input id="photo-x" type="range" min="-80" max="80" value="0" /></label>
+                <label class="field"><span>Move Y</span><input id="photo-y" type="range" min="-80" max="80" value="0" /></label>
+              </div>
+            </article>
+            <article class="studio-card preview-card">
+              <div id="creative-preview" class="creative-preview">
+                <img id="template-preview-image" alt="" />
+                <div class="photo-holder"><img id="customer-photo-preview" alt="" /></div>
+                <div class="creative-text creative-name" id="preview-customer-name">Customer Name</div>
+                <div class="creative-text creative-unit" id="preview-unit-text">Unit A205 | East Facing</div>
+                <div class="creative-text creative-project" id="preview-project-text">Project Name</div>
+                <div class="creative-text creative-sales" id="preview-sales-text">Sales Person</div>
+              </div>
+              <form id="creative-form" class="creative-form">
+                <div class="inline-fields">
+                  <label class="field"><span>Customer Name</span><input name="customerName" required /></label>
+                  <label class="field"><span>Unit Number</span><input name="unitNumber" required /></label>
+                </div>
+                <div class="inline-fields">
+                  <label class="field"><span>Tower Name</span><input name="towerName" required /></label>
+                  <label class="field"><span>Facing</span><input name="facing" required /></label>
+                </div>
+                <div class="inline-fields">
+                  <label class="field"><span>Project Name</span><input name="projectName" required /></label>
+                  <label class="field"><span>Sales Person Name</span><input name="salesPerson" required /></label>
+                </div>
+                <label class="field"><span>Booking Date</span><input name="bookingDate" type="date" required /></label>
+                <button class="primary-btn" type="submit">Save Draft</button>
+                <button class="secondary-btn" type="button" id="send-approval">Send for Approval</button>
+              </form>
+            </article>
+          </div>
+        </section>
+
+        <section class="view approvals-view" id="approvals-view">
+          <div class="admin-header">
+            <div>
+              <p class="eyebrow">SALES APPROVAL WORKFLOW</p>
+              <h2>Pending Creative Approvals</h2>
+              <p class="muted">Review customer photo, template and details before WhatsApp delivery.</p>
+            </div>
+          </div>
+          <div id="approval-list" class="history-grid"></div>
+        </section>
+
+        <section class="view history-view" id="history-view">
+          <div class="admin-header">
+            <div>
+              <p class="eyebrow">CREATIVE HISTORY</p>
+              <h2>Generated Creatives</h2>
+            </div>
+          </div>
+          <div class="history-filters">
+            <input id="history-customer-filter" placeholder="Customer" />
+            <input id="history-project-filter" placeholder="Project" />
+            <input id="history-sales-filter" placeholder="Sales Executive" />
+            <input id="history-date-filter" type="date" />
+          </div>
+          <div id="creative-history-list" class="history-grid"></div>
+        </section>
+
+        <section class="view insights-view" id="insights-view">
+          <div class="dashboard-cards" id="dashboard-cards"></div>
+          <div class="insight-grid">
+            <article class="insight-card wide">
+              <p class="eyebrow">SALES MOMENTUM</p>
+              <h2>Bookings today by tower</h2>
+              <div class="bars" id="tower-bars"></div>
+            </article>
+            <article class="insight-card wide">
+              <p class="eyebrow">MARKET VIEW</p>
+              <h2>Bookings by facing</h2>
+              <div class="bars" id="facing-bars"></div>
+            </article>
+            <article class="insight-card wide">
+              <p class="eyebrow">CREATIVE OPS</p>
+              <h2>Creative generation trend</h2>
+              <div class="bars" id="creative-trend-bars"></div>
+            </article>
+            <article class="insight-card wide">
+              <p class="eyebrow">TEAM</p>
+              <h2>Sales executive performance</h2>
+              <div class="bars" id="sales-performance-bars"></div>
+            </article>
+            <article class="insight-card">
+              <p class="eyebrow">REVENUE TODAY</p>
+              <h2 id="revenue-total"></h2>
+              <p class="muted">Confirmed launch-day bookings</p>
+            </article>
+            <article class="insight-card">
+              <p class="eyebrow">RESERVATIONS</p>
+              <h2 id="hold-total"></h2>
+              <p class="muted">Active holds awaiting confirmation</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="view admin-view" id="admin-view">
+          <div class="admin-header">
+            <div>
+              <p class="eyebrow">ADMIN CONTROL PANEL</p>
+              <h2>Project and Inventory Setup</h2>
+              <p class="muted">Only administrators can add inventory or remove booked records and projects.</p>
+            </div>
+            <button class="danger-btn" id="delete-project">Delete Current Project</button>
+          </div>
+          <div class="admin-grid">
+            <form class="admin-card user-card" id="add-user-form">
+              <p class="eyebrow">ACCESS CONTROL</p>
+              <h3>Create Sales Login</h3>
+              <label class="field"><span>User name</span><input name="displayName" placeholder="Ravi Shah" required /></label>
+              <label class="field"><span>Login ID</span><input name="loginId" placeholder="ravi.shah" autocomplete="off" required /></label>
+              <label class="field"><span>Password</span><input name="password" type="password" minlength="6" autocomplete="new-password" required /></label>
+              <label class="field"><span>Role</span><select name="role"><option value="sales">Sales User</option><option value="creative">Creative Team</option><option value="manager">Sales Manager</option></select></label>
+              <button class="primary-btn" type="submit">Create User Login</button>
+            </form>
+            <article class="admin-card user-list-card">
+              <p class="eyebrow">USERS</p>
+              <h3>Active Logins</h3>
+              <div id="user-list"></div>
+            </article>
+            <form class="admin-card password-card" id="change-password-form">
+              <p class="eyebrow">ADMIN ACCOUNT</p>
+              <h3>Change Password</h3>
+              <label class="field"><span>Current password</span><input name="currentPassword" type="password" autocomplete="current-password" required /></label>
+              <label class="field"><span>New password</span><input name="newPassword" type="password" minlength="6" autocomplete="new-password" required /></label>
+              <button class="primary-btn" type="submit">Update Password</button>
+            </form>
+            <article class="admin-card upload-card">
+              <div class="upload-heading">
+                <div>
+                  <p class="eyebrow">DAILY UPDATE</p>
+                  <h3>Upload Booking Board</h3>
+                </div>
+                <span class="file-pill">CSV / XLSX</span>
+              </div>
+              <p class="muted">Select a daily sheet to automatically update units and statuses in <strong id="import-project-name"></strong>.</p>
+              <label class="upload-drop" for="inventory-upload">
+                <strong>Choose booking board file</strong>
+                <span>Supports your Cambridge format: Block, Floor, Unit No, Facing, Availability</span>
+              </label>
+              <input id="inventory-upload" class="hidden-file" type="file" accept=".csv,.xlsx" />
+              <label class="checkbox import-checkbox"><input id="replace-import" type="checkbox" checked /> Remove units not present in this full daily sheet</label>
+              <div class="import-report" id="import-report">No file uploaded yet.</div>
+            </article>
+            <form class="admin-card" id="add-project-form">
+              <h3>Add Project</h3>
+              <label class="field"><span>Project name</span><input name="projectName" placeholder="Aurelia Phase 2" required /></label>
+              <label class="field"><span>Apartment name</span><input name="apartmentName" placeholder="Skyline Residences" required /></label>
+              <label class="field"><span>Location</span><input name="location" placeholder="Whitefield, Bengaluru" required /></label>
+              <label class="field"><span>Launch phase</span><input name="phase" placeholder="PHASE 02" required /></label>
+              <button class="primary-btn" type="submit">Create Project</button>
+            </form>
+            <form class="admin-card" id="add-tower-form">
+              <h3>Add Tower</h3>
+              <p class="admin-context" id="tower-form-context"></p>
+              <label class="field"><span>Tower code</span><input name="towerId" placeholder="D" maxlength="4" required /></label>
+              <label class="field"><span>Tower name</span><input name="towerName" placeholder="Dawn" required /></label>
+              <button class="primary-btn" type="submit">Add Tower</button>
+            </form>
+            <form class="admin-card" id="add-unit-form">
+              <h3>Add Unit</h3>
+              <label class="field"><span>Tower</span><select name="tower" id="unit-tower-select" required></select></label>
+              <div class="inline-fields">
+                <label class="field"><span>Floor</span><input name="floor" type="number" min="1" value="1" required /></label>
+                <label class="field"><span>Unit no.</span><input name="unitNumber" placeholder="01" required /></label>
+              </div>
+              <label class="field"><span>Configuration</span><input name="type" placeholder="3 BHK" required /></label>
+              <div class="inline-fields">
+                <label class="field"><span>Area (sq.ft)</span><input name="area" type="number" min="100" required /></label>
+                <label class="field"><span>Price (lakhs)</span><input name="priceLakhs" type="number" min="1" required /></label>
+              </div>
+              <label class="field"><span>Facing</span><select name="facing"><option>East</option><option>West</option><option>North</option><option>South</option><option>North-East</option><option>North-West</option><option>South-East</option><option>South-West</option><option>Garden</option></select></label>
+              <label class="checkbox"><input name="featured" type="checkbox" /> Premium / Featured unit</label>
+              <button class="primary-btn" type="submit">Add Unit</button>
+            </form>
+            <article class="admin-card booked-manager">
+              <h3>Booked Units</h3>
+              <p class="muted">Cancel an incorrect confirmed booking and return its unit to availability.</p>
+              <div id="booked-unit-list"></div>
+            </article>
+            <article class="admin-card audit-card">
+              <h3>Audit Log</h3>
+              <p class="muted">Recent booking, approval and user-management activity.</p>
+              <div id="audit-list"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="booking-modal" class="modal hidden">
+      <form id="booking-form" class="modal-card">
+        <h2>Customer Booking Form</h2>
+        <input name="unitId" type="hidden" />
+        <div class="inline-fields">
+          <label class="field"><span>Customer Name</span><input name="customerName" required /></label>
+          <label class="field"><span>Mobile Number</span><input name="mobile" required /></label>
+        </div>
+        <label class="field"><span>Email</span><input name="email" type="email" /></label>
+        <div class="inline-fields">
+          <label class="field"><span>Unit Number</span><input name="unitNumber" readonly /></label>
+          <label class="field"><span>Tower</span><input name="tower" readonly /></label>
+        </div>
+        <div class="inline-fields">
+          <label class="field"><span>Booking Date</span><input name="bookingDate" type="date" required /></label>
+          <label class="field"><span>Sales Person</span><input name="salesPerson" readonly /></label>
+        </div>
+        <label class="field"><span>Booking Amount</span><input name="bookingAmount" type="number" min="0" required /></label>
+        <label class="field"><span>Remarks</span><textarea name="remarks" rows="3"></textarea></label>
+        <div class="modal-actions">
+          <button class="secondary-btn" type="button" id="cancel-booking-form">Cancel</button>
+          <button class="primary-btn" type="submit">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+    <div id="toast-region" class="toast-region" aria-live="assertive"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
