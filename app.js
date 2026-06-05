@@ -499,11 +499,39 @@
       <article class="launch-stat"><span>BOOKED UNITS</span><strong>${soldUnits.length}</strong></article>`;
     document.getElementById("heatmap").innerHTML = towers().map((tower) => {
       const towerUnits = units().filter((unit) => unit.tower === tower.id && unitMatchesLaunchFilters(unit));
-      const floors = [...new Set(towerUnits.map((unit) => unit.floor))].sort((a, b) => b - a);
-      const cells = floors.map((floor) => `<div class="heat-floor">${towerUnits.filter((unit) => unit.floor === floor)
-        .map((unit) => `<button title="${escapeHtml(unitTooltip(unit))}" class="heat-unit ${unit.state}" data-unit="${escapeHtml(unit.id)}"><strong>${escapeHtml(unit.id)}</strong><span>${escapeHtml(unit.facing)} Facing</span></button>`).join("")}</div>`).join("");
+      const floors = [...new Set(towerUnits.map((unit) => unit.floor))].sort((a, b) => a - b);
+      const cells = floors.map((floor) => {
+        const floorUnits = towerUnits
+          .filter((unit) => unit.floor === floor)
+          .sort((left, right) => left.position - right.position || left.id.localeCompare(right.id));
+        return `<div class="heat-floor"><div class="heat-floor-label">FLOOR ${floor}</div><div class="heat-floor-units">${floorUnits
+          .map((unit) => `<button title="${escapeHtml(unitTooltip(unit))}" class="heat-unit ${unit.state}" data-unit="${escapeHtml(unit.id)}"><strong>${escapeHtml(unit.id)}</strong><span>${escapeHtml(unit.facing)} Facing</span></button>`).join("")}</div></div>`;
+      }).join("");
       return `<div class="heat-tower"><h4>Tower ${escapeHtml(tower.id)} | ${escapeHtml(tower.name)}</h4>${cells || `<p class="muted">No matching units.</p>`}</div>`;
     }).join("") || `<p class="muted">No towers configured.</p>`;
+  }
+
+  async function toggleLaunchTvMode() {
+    const launchView = document.getElementById("launch-view");
+    if (!document.fullscreenElement) {
+      switchView("launch");
+      document.body.classList.add("launch-tv-mode");
+      try {
+        await launchView.requestFullscreen();
+      } catch (error) {
+        document.body.classList.remove("launch-tv-mode");
+        showToast("Full screen is not available in this browser.");
+      }
+      return;
+    }
+    await document.exitFullscreen();
+  }
+
+  function syncLaunchTvMode() {
+    const isLaunchFullscreen = document.fullscreenElement === document.getElementById("launch-view");
+    document.body.classList.toggle("launch-tv-mode", isLaunchFullscreen);
+    const button = document.getElementById("launch-tv-mode");
+    if (button) button.textContent = isLaunchFullscreen ? "Exit TV Mode" : "Full Screen TV Mode";
   }
 
   function renderInsights() {
@@ -1133,6 +1161,8 @@
     const viewCreativeButton = event.target.closest("[data-view-creative]");
     const downloadCreativeButton = event.target.closest("[data-download-creative]");
     const resendCreativeButton = event.target.closest("[data-resend-creative]");
+    const tvModeButton = event.target.closest("#launch-tv-mode");
+    if (tvModeButton) return toggleLaunchTvMode();
     if (unitButton) return selectUnit(unitButton.dataset.unit);
     if (towerButton) {
       ui.tower = towerButton.dataset.tower;
@@ -1179,6 +1209,8 @@
       renderAll();
     }
   });
+
+  document.addEventListener("fullscreenchange", syncLaunchTvMode);
 
   document.getElementById("project-select").addEventListener("change", (event) => {
     state.currentProjectId = event.target.value;

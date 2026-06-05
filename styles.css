@@ -16,7 +16,7 @@
   /* Status Colors */
   --available: #28a745;
   --available-soft: #e8f5e9;
-  --held: #828282;
+  --held: #f2c94c;
   --held-soft: #fff3e0;
   --sold: #f26522;
   --sold-soft: #ffebee;
@@ -859,6 +859,18 @@ input[type="range"] {
   font-size: 19px;
 }
 
+.heatmap-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tv-mode-btn {
+  white-space: nowrap;
+}
+
 .live-pill {
   background: var(--available-soft);
   color: var(--available);
@@ -870,7 +882,7 @@ input[type="range"] {
 
 .heatmap {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: 18px;
 }
 
@@ -898,16 +910,76 @@ input[type="range"] {
   background: white;
 }
 
+.heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfe;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.heatmap-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+
+.legend-dot.available {
+  background: var(--available);
+}
+
+.legend-dot.held {
+  background: var(--held);
+}
+
+.legend-dot.sold {
+  background: var(--sold);
+}
+
+.heat-tower {
+  min-width: 0;
+}
+
 .heat-tower h4 {
   margin: 0 0 11px;
   font-size: 14px;
 }
 
 .heat-floor {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.heat-floor-label {
+  margin-bottom: 7px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.heat-floor-units {
+  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
-  gap: 5px;
-  margin-bottom: 5px;
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+  gap: 6px;
 }
 
 .heat-unit {
@@ -936,6 +1008,7 @@ input[type="range"] {
 
 .heat-unit.held {
   background: var(--held);
+  color: #3f3100;
 }
 
 .heat-unit.sold {
@@ -944,6 +1017,100 @@ input[type="range"] {
 
 .heat-unit.featured {
   background: var(--featured);
+}
+
+body.launch-tv-mode {
+  overflow: hidden;
+}
+
+body.launch-tv-mode .launch-view,
+.launch-view:fullscreen {
+  min-height: 100vh;
+  padding: clamp(24px, 2.5vw, 52px);
+  gap: clamp(18px, 1.6vw, 34px);
+  background: #f5f7fb;
+  overflow: auto;
+}
+
+body.launch-tv-mode .launch-metrics,
+body.launch-tv-mode .heatmap-filters,
+body.launch-tv-mode .heatmap-card > .card-heading {
+  display: none;
+}
+
+body.launch-tv-mode .launch-banner {
+  padding: clamp(22px, 2.1vw, 46px) clamp(30px, 3vw, 70px);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(43, 71, 154, 0.12);
+}
+
+body.launch-tv-mode .launch-banner .eyebrow {
+  display: none;
+}
+
+body.launch-tv-mode .launch-banner h2 {
+  font-size: clamp(42px, 3.7vw, 86px);
+  line-height: 1;
+}
+
+body.launch-tv-mode .launch-time {
+  font-size: clamp(34px, 3vw, 70px);
+}
+
+body.launch-tv-mode .heatmap-card {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+body.launch-tv-mode .heatmap-legend {
+  justify-content: center;
+  gap: clamp(22px, 3vw, 58px);
+  margin-bottom: clamp(18px, 2vw, 42px);
+  padding: clamp(16px, 1.3vw, 28px);
+  border-radius: 14px;
+  font-size: clamp(18px, 1.15vw, 30px);
+}
+
+body.launch-tv-mode .legend-dot {
+  width: clamp(16px, 1vw, 26px);
+  height: clamp(16px, 1vw, 26px);
+}
+
+body.launch-tv-mode .heatmap {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 620px), 1fr));
+  gap: clamp(24px, 2.2vw, 54px);
+}
+
+body.launch-tv-mode .heat-tower h4 {
+  margin-bottom: clamp(16px, 1.4vw, 30px);
+  font-size: clamp(24px, 1.6vw, 42px);
+}
+
+body.launch-tv-mode .heat-floor {
+  margin-bottom: clamp(18px, 1.6vw, 36px);
+}
+
+body.launch-tv-mode .heat-floor-label {
+  margin-bottom: clamp(9px, 0.8vw, 18px);
+  font-size: clamp(22px, 1.55vw, 40px);
+}
+
+body.launch-tv-mode .heat-floor-units {
+  grid-template-columns: repeat(auto-fit, minmax(clamp(128px, 9vw, 220px), 1fr));
+  gap: clamp(10px, 0.9vw, 20px);
+}
+
+body.launch-tv-mode .heat-unit {
+  min-height: clamp(76px, 5.8vw, 140px);
+  border-radius: 10px;
+  padding: clamp(12px, 1vw, 24px);
+  font-size: clamp(18px, 1.25vw, 34px);
+}
+
+body.launch-tv-mode .heat-unit span {
+  font-size: clamp(13px, 0.85vw, 22px);
 }
 
 .insights-view.active {
@@ -1605,6 +1772,34 @@ input[type="range"] {
 
   .heatmap {
     grid-template-columns: 1fr;
+  }
+
+  .heatmap-card {
+    padding: 18px;
+  }
+
+  .heatmap-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .heatmap-actions {
+    justify-content: flex-start;
+  }
+
+  .tv-mode-btn {
+    width: 100%;
+  }
+
+  .heat-floor {
+    margin-bottom: 14px;
+  }
+
+  .heat-floor-label {
+    margin-bottom: 6px;
+  }
+
+  .heat-floor-units {
+    grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
   }
 
   .admin-header {

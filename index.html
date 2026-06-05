@@ -160,7 +160,10 @@
             <div class="heatmap-card">
               <div class="card-heading">
                 <h3>Availability Heat Map</h3>
-                <span class="live-pill">LIVE</span>
+                <div class="heatmap-actions">
+                  <span class="live-pill">LIVE</span>
+                  <button class="secondary-btn tv-mode-btn" type="button" id="launch-tv-mode">Full Screen TV Mode</button>
+                </div>
               </div>
               <div class="heatmap-filters">
                 <label>Facing <select id="launch-facing-filter"></select></label>
@@ -168,6 +171,11 @@
                 <label>Floor <select id="launch-floor-filter"></select></label>
                 <label>Max Price <input id="launch-price-filter" type="range" min="0" max="320" value="320" step="5" /></label>
                 <strong id="launch-price-label">INR 3.20 Cr</strong>
+              </div>
+              <div class="heatmap-legend" aria-label="Availability status legend">
+                <span><i class="legend-dot available"></i>Available</span>
+                <span><i class="legend-dot held"></i>Reserved</span>
+                <span><i class="legend-dot sold"></i>Booked</span>
               </div>
               <div class="heatmap" id="heatmap"></div>
             </div>
