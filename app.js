@@ -1,3 +1,29 @@
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  onSnapshot
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBJT1qom4qVSt_2Gj04zVKSV3TCORwiwU0",
+  authDomain: "dac-live.firebaseapp.com",
+  projectId: "dac-live",
+  storageBucket: "dac-live.firebasestorage.app",
+  messagingSenderId: "989021582048",
+  appId: "1:989021582048:web:d8a4d3017c313833635685",
+  measurementId: "G-2VSJ00DRHQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 (() => {
   "use strict";
 
@@ -150,6 +176,41 @@
   function persist(message) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     if (channel) channel.postMessage({ type: "refresh", message });
+  }
+
+  async function uploadUnitsToFirebase() {
+
+    for (const unit of units()) {
+
+      await setDoc(
+        doc(db, "units", unit.id),
+        unit
+      );
+
+    }
+
+    console.log("All units uploaded");
+
+  }
+
+  function applyFirebaseUnits(firebaseUnits) {
+    if (!firebaseUnits.length || !project()) return;
+    project().units = firebaseUnits;
+    firebaseUnits.forEach((unit) => {
+      if (!project().towers.some((tower) => tower.id === unit.tower)) {
+        project().towers.push({ id: unit.tower, name: `Block ${unit.tower}` });
+      }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (currentUser) renderAll();
+  }
+
+  async function syncUnitToFirebase(unit, fields) {
+    try {
+      await updateDoc(doc(db, "units", unit.id), fields);
+    } catch (error) {
+      console.warn(`Could not sync ${unit.id} to Firebase.`, error);
+    }
   }
 
   async function hashPassword(password) {
@@ -666,10 +727,18 @@
     renderUnitPanel();
   }
 
-  function reserveSelected() {
+  async function reserveSelected() {
     const unit = unitById(ui.selectedUnit);
     if (!unit || unit.state !== "available") return;
     Object.assign(unit, { state: "held", heldBy: agent(), heldUntil: Date.now() + HOLD_DURATION, heldSession: SESSION_ID });
+    await syncUnitToFirebase(unit, {
+      state: "held",
+      heldBy: unit.heldBy,
+      heldUntil: unit.heldUntil,
+      heldSession: unit.heldSession,
+      soldBy: null,
+      soldAt: null
+    });
     persist(`${unit.id} reserved by ${unit.heldBy}.`);
     showToast(`${unit.id} reserved for ${unit.heldBy}.`);
     renderAll();
@@ -693,11 +762,23 @@
     form.customerName.focus();
   }
 
-  function finalizeBooking(form) {
+  async function finalizeBooking(form) {
     const data = new FormData(form);
     const unit = unitById(String(data.get("unitId")));
     if (!unit || unit.state !== "held" || unit.heldSession !== SESSION_ID || unit.heldBy !== agent()) return;
-    Object.assign(unit, { state: "sold", soldBy: unit.heldBy, soldAt: Date.now(), heldUntil: null, heldSession: null });
+    const soldAt = Date.now();
+    try {
+      await updateDoc(doc(db, "units", unit.id), {
+        state: "sold",
+        soldBy: agent(),
+        soldAt
+      });
+    } catch (error) {
+      console.warn(`Could not confirm ${unit.id} in Firebase.`, error);
+      showToast("Firebase booking update failed. Check Firestore access.");
+      return;
+    }
+    Object.assign(unit, { state: "sold", soldBy: unit.heldBy, soldAt, heldUntil: null, heldSession: null });
     const booking = {
       id: `booking-${Date.now()}`,
       unitId: unit.id,
@@ -723,20 +804,36 @@
     renderAll();
   }
 
-  function releaseSelected() {
+  async function releaseSelected() {
     const unit = unitById(ui.selectedUnit);
     if (!unit || unit.state !== "held" || unit.heldSession !== SESSION_ID || unit.heldBy !== agent()) return;
     Object.assign(unit, { state: "available", heldBy: null, heldUntil: null, heldSession: null });
+    await syncUnitToFirebase(unit, {
+      state: "available",
+      heldBy: null,
+      heldUntil: null,
+      heldSession: null,
+      soldBy: null,
+      soldAt: null
+    });
     persist(`${unit.id} released.`);
     showToast(`${unit.id} returned to availability.`);
     renderAll();
   }
 
-  function removeBookedUnit(id) {
+  async function removeBookedUnit(id) {
     if (!isAdmin()) return;
     const unit = unitById(id);
     if (!unit || unit.state !== "sold") return;
     Object.assign(unit, { state: "available", soldBy: null, soldAt: null, heldBy: null, heldUntil: null, heldSession: null });
+    await syncUnitToFirebase(unit, {
+      state: "available",
+      soldBy: null,
+      soldAt: null,
+      heldBy: null,
+      heldUntil: null,
+      heldSession: null
+    });
     project().events = project().events.filter((event) => event.unitId !== id);
     project().bookings = bookings().filter((booking) => booking.unitId !== id);
     audit(`Booking cancelled for ${id}`);
@@ -745,12 +842,20 @@
     renderAll();
   }
 
-  function simulateBooking() {
+  async function simulateBooking() {
     const candidates = availableUnits();
     if (!candidates.length) return;
     const unit = candidates[Math.floor(Math.random() * candidates.length)];
     const sellers = activeSalesPeople();
     Object.assign(unit, { state: "sold", soldBy: sellers[Math.floor(Math.random() * sellers.length)] || "Sales Team", soldAt: Date.now() });
+    await syncUnitToFirebase(unit, {
+      state: "sold",
+      soldBy: unit.soldBy,
+      soldAt: unit.soldAt,
+      heldBy: null,
+      heldUntil: null,
+      heldSession: null
+    });
     project().events.unshift({ id: `simulation-${Date.now()}`, unitId: unit.id, agent: unit.soldBy, priceLakhs: unit.priceLakhs, at: unit.soldAt });
     persist(`${unit.id} booked on another sales screen.`);
     showToast(`Live booking: ${unit.id} confirmed by ${unit.soldBy}.`);
@@ -1533,4 +1638,18 @@
   }
 
   bootstrap();
+  onSnapshot(collection(db, "units"), (snapshot) => {
+
+    const firebaseUnits = snapshot.docs.map((unitDoc) => ({
+      id: unitDoc.id,
+      ...unitDoc.data()
+    }));
+
+    console.log(firebaseUnits);
+    applyFirebaseUnits(firebaseUnits);
+
+  });
+
+  // REMOVE AFTER FIRST FIREBASE SEED RUN.
+  uploadUnitsToFirebase();
 })();
