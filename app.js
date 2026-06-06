@@ -7,9 +7,11 @@ import {
   doc,
   setDoc,
   updateDoc,
-  onSnapshot
+  onSnapshot,
+  writeBatch
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJT1qom4qVSt_2Gj04zVKSV3TCORwiwU0",
@@ -178,20 +180,26 @@ const db = getFirestore(app);
     if (channel) channel.postMessage({ type: "refresh", message });
   }
 
-  async function uploadUnitsToFirebase() {
 
-    for (const unit of units()) {
 
-      await setDoc(
-        doc(db, "units", unit.id),
-        unit
-      );
+async function uploadUnitsToFirebase() {
 
-    }
+  const batch = writeBatch(db);
 
-    console.log("All units uploaded");
+  for (const unit of units()) {
+
+    const ref = doc(db, "units", unit.id);
+
+    batch.set(ref, unit);
 
   }
+
+  await batch.commit();
+
+  console.log("All units uploaded to Firebase");
+
+}
+
 
   function applyFirebaseUnits(firebaseUnits) {
     if (!firebaseUnits.length || !project()) return;
@@ -670,6 +678,7 @@ const db = getFirestore(app);
     document.getElementById("auth-screen").classList.toggle("hidden", authenticated);
     document.getElementById("app-shell").classList.toggle("locked", !authenticated);
     document.getElementById("first-login-hint").hidden = authState && authState.initialPasswordActive === false;
+    document.querySelectorAll(".admin-only").forEach((item) => item.classList.toggle("visible", isAdmin()));
     document.querySelectorAll(".approval-access").forEach((item) => item.classList.toggle("visible", canApproveCreatives()));
     document.querySelectorAll(".template-admin-only").forEach((item) => item.style.display = canManageTemplates() ? "block" : "none");
     if (authenticated) {
@@ -778,7 +787,13 @@ const db = getFirestore(app);
       showToast("Firebase booking update failed. Check Firestore access.");
       return;
     }
-    Object.assign(unit, { state: "sold", soldBy: unit.heldBy, soldAt, heldUntil: null, heldSession: null });
+    Object.assign(unit, {
+      state: "sold",
+      soldBy: unit.heldBy,
+      soldAt,
+      heldUntil: null,
+      heldSession: null
+    });
     const booking = {
       id: `booking-${Date.now()}`,
       unitId: unit.id,
@@ -1246,6 +1261,7 @@ const db = getFirestore(app);
       if (!imported.length) throw new Error("No inventory rows were found.");
       const counts = synchronizeImportedUnits(imported, document.getElementById("replace-import").checked);
       resetProjectUi();
+      await uploadUnitsToFirebase();
       persist(`${file.name} imported by administrator.`);
       renderAll();
       showImportReport(`${file.name}: ${imported.length} units updated (${counts.available} available, ${counts.held} blocked, ${counts.sold} booked).`, "success");
@@ -1637,7 +1653,11 @@ const db = getFirestore(app);
     }
   }
 
-  bootstrap();
+  bootstrap().catch((error) => {
+    console.error("Login initialization failed.", error);
+    document.getElementById("login-error").textContent = "Login could not start. Refresh the page.";
+  });
+
   onSnapshot(collection(db, "units"), (snapshot) => {
 
     const firebaseUnits = snapshot.docs.map((unitDoc) => ({
@@ -1650,6 +1670,5 @@ const db = getFirestore(app);
 
   });
 
-  // REMOVE AFTER FIRST FIREBASE SEED RUN.
-  uploadUnitsToFirebase();
+  window.uploadUnitsToFirebase = uploadUnitsToFirebase;
 })();

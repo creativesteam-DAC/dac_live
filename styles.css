@@ -16,9 +16,9 @@
   /* Status Colors */
   --available: #28a745;
   --available-soft: #e8f5e9;
-  --held: #f2c94c;
+  --held: #ffb020;
   --held-soft: #fff3e0;
-  --sold: #f26522;
+  --sold: #ff5a36;
   --sold-soft: #ffebee;
   --featured: var(--forest);
   --featured-soft: var(--forest-soft);
@@ -996,6 +996,12 @@ input[type="range"] {
   font-weight: 800;
 }
 
+.heat-unit strong {
+  display: block;
+  font-size: 1.45em;
+  line-height: 1;
+}
+
 .heat-unit span {
   font-size: 9px;
   font-weight: 600;
@@ -1026,8 +1032,8 @@ body.launch-tv-mode {
 body.launch-tv-mode .launch-view,
 .launch-view:fullscreen {
   min-height: 100vh;
-  padding: clamp(24px, 2.5vw, 52px);
-  gap: clamp(18px, 1.6vw, 34px);
+  padding: clamp(14px, 1.6vw, 42px);
+  gap: clamp(10px, 1vw, 26px);
   background: #f5f7fb;
   overflow: auto;
 }
@@ -1039,8 +1045,8 @@ body.launch-tv-mode .heatmap-card > .card-heading {
 }
 
 body.launch-tv-mode .launch-banner {
-  padding: clamp(22px, 2.1vw, 46px) clamp(30px, 3vw, 70px);
-  border-radius: 18px;
+  padding: clamp(14px, 1.45vw, 38px) clamp(24px, 2.4vw, 64px);
+  border-radius: 14px;
   box-shadow: 0 20px 60px rgba(43, 71, 154, 0.12);
 }
 
@@ -1049,12 +1055,12 @@ body.launch-tv-mode .launch-banner .eyebrow {
 }
 
 body.launch-tv-mode .launch-banner h2 {
-  font-size: clamp(42px, 3.7vw, 86px);
+  font-size: clamp(32px, 3vw, 82px);
   line-height: 1;
 }
 
 body.launch-tv-mode .launch-time {
-  font-size: clamp(34px, 3vw, 70px);
+  font-size: clamp(26px, 2.4vw, 64px);
 }
 
 body.launch-tv-mode .heatmap-card {
@@ -1066,51 +1072,139 @@ body.launch-tv-mode .heatmap-card {
 
 body.launch-tv-mode .heatmap-legend {
   justify-content: center;
-  gap: clamp(22px, 3vw, 58px);
-  margin-bottom: clamp(18px, 2vw, 42px);
-  padding: clamp(16px, 1.3vw, 28px);
-  border-radius: 14px;
-  font-size: clamp(18px, 1.15vw, 30px);
+  gap: clamp(18px, 2.4vw, 58px);
+  margin-bottom: clamp(10px, 1.2vw, 36px);
+  padding: clamp(10px, 0.9vw, 26px);
+  border-radius: 12px;
+  font-size: clamp(15px, 1vw, 30px);
 }
 
 body.launch-tv-mode .legend-dot {
-  width: clamp(16px, 1vw, 26px);
-  height: clamp(16px, 1vw, 26px);
+  width: clamp(13px, 0.9vw, 26px);
+  height: clamp(13px, 0.9vw, 26px);
 }
 
 body.launch-tv-mode .heatmap {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 620px), 1fr));
-  gap: clamp(24px, 2.2vw, 54px);
+  gap: clamp(16px, 1.7vw, 54px);
+}
+
+.launch-tv-mode .heatmap {
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+}
+
+.launch-tv-mode .heatmap-filters {
+  display: none;
+}
+
+.launch-tv-mode .launch-stat strong {
+  font-size: 56px;
 }
 
 body.launch-tv-mode .heat-tower h4 {
-  margin-bottom: clamp(16px, 1.4vw, 30px);
-  font-size: clamp(24px, 1.6vw, 42px);
+  margin-bottom: clamp(8px, 0.9vw, 28px);
+  font-size: clamp(20px, 1.35vw, 42px);
 }
 
 body.launch-tv-mode .heat-floor {
-  margin-bottom: clamp(18px, 1.6vw, 36px);
+  margin-bottom: clamp(9px, 0.9vw, 30px);
 }
 
 body.launch-tv-mode .heat-floor-label {
-  margin-bottom: clamp(9px, 0.8vw, 18px);
-  font-size: clamp(22px, 1.55vw, 40px);
+  margin-bottom: clamp(5px, 0.45vw, 16px);
+  font-size: clamp(17px, 1.25vw, 40px);
+}
+
+.launch-tv-mode .heat-floor-label {
+  font-size: 22px;
+  min-width: 120px;
 }
 
 body.launch-tv-mode .heat-floor-units {
-  grid-template-columns: repeat(auto-fit, minmax(clamp(128px, 9vw, 220px), 1fr));
-  gap: clamp(10px, 0.9vw, 20px);
+  grid-template-columns: repeat(auto-fit, minmax(clamp(104px, 8vw, 220px), 1fr));
+  gap: clamp(7px, 0.65vw, 20px);
 }
 
 body.launch-tv-mode .heat-unit {
-  min-height: clamp(76px, 5.8vw, 140px);
-  border-radius: 10px;
-  padding: clamp(12px, 1vw, 24px);
-  font-size: clamp(18px, 1.25vw, 34px);
+  min-height: clamp(52px, 4.3vw, 140px);
+  border-radius: 8px;
+  padding: clamp(8px, 0.8vw, 24px);
+  font-size: clamp(15px, 1vw, 34px);
+}
+
+.launch-tv-mode .heat-unit {
+  min-height: 88px;
+  font-size: 18px;
+}
+
+body.launch-tv-mode .heat-unit strong {
+  font-size: clamp(24px, 1.9vw, 54px);
 }
 
 body.launch-tv-mode .heat-unit span {
-  font-size: clamp(13px, 0.85vw, 22px);
+  font-size: clamp(10px, 0.7vw, 22px);
+}
+
+@media (max-width: 1400px) and (max-height: 820px) and (orientation: landscape) {
+  body.launch-tv-mode .launch-view,
+  .launch-view:fullscreen {
+    padding: 12px 18px;
+    gap: 9px;
+  }
+
+  body.launch-tv-mode .launch-banner {
+    padding: 12px 22px;
+  }
+
+  body.launch-tv-mode .launch-banner h2 {
+    font-size: 34px;
+  }
+
+  body.launch-tv-mode .launch-time {
+    font-size: 28px;
+  }
+
+  body.launch-tv-mode .heatmap-legend {
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  body.launch-tv-mode .heatmap {
+    gap: 14px;
+  }
+
+  body.launch-tv-mode .heat-tower h4 {
+    margin-bottom: 7px;
+    font-size: 18px;
+  }
+
+  body.launch-tv-mode .heat-floor {
+    margin-bottom: 7px;
+  }
+
+  body.launch-tv-mode .heat-floor-label {
+    margin-bottom: 4px;
+    font-size: 16px;
+  }
+
+  body.launch-tv-mode .heat-floor-units {
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 6px;
+  }
+
+  body.launch-tv-mode .heat-unit {
+    min-height: 46px;
+    padding: 6px 8px;
+  }
+
+  body.launch-tv-mode .heat-unit strong {
+    font-size: 24px;
+  }
+
+  body.launch-tv-mode .heat-unit span {
+    font-size: 9px;
+  }
 }
 
 .insights-view.active {
@@ -1823,4 +1917,435 @@ body.launch-tv-mode .heat-unit span {
   .password-card {
     grid-column: span 1;
   }
+}
+
+/* =========================================
+FINAL DAC LIVE INVENTORY ENHANCEMENTS
+========================================= */
+
+/* =========================
+DAC LOGO RESPONSIVE FIX
+========================= */
+
+.logo-img {
+
+width: clamp(140px, 16vw, 240px);
+
+height: auto;
+
+object-fit: contain;
+
+display: block;
+
+}
+
+.logo-img-large {
+
+width: clamp(180px, 20vw, 320px);
+
+height: auto;
+
+object-fit: contain;
+
+}
+
+/* =========================
+HEATMAP IMPROVEMENTS
+========================= */
+
+.heatmap {
+
+align-items: start;
+
+}
+
+.heat-tower {
+
+background: white;
+
+border: 1px solid var(--line);
+
+border-radius: 14px;
+
+padding: 18px;
+
+box-shadow: 0 8px 30px rgba(43, 71, 154, 0.06);
+
+}
+
+.heat-tower h4 {
+
+color: var(--forest);
+
+font-size: 18px;
+
+margin-bottom: 16px;
+
+font-weight: 800;
+
+}
+
+/* =========================
+FLOOR ROW HORIZONTAL
+========================= */
+
+.heat-floor {
+
+display: flex;
+
+align-items: flex-start;
+
+gap: 12px;
+
+margin-bottom: 18px;
+
+}
+
+.heat-floor-label {
+
+min-width: 90px;
+
+background: var(--forest);
+
+color: white;
+
+border-radius: 8px;
+
+padding: 10px;
+
+text-align: center;
+
+font-size: 12px;
+
+font-weight: 800;
+
+letter-spacing: 0.08em;
+
+margin-bottom: 0;
+
+}
+
+.heat-floor-units {
+
+flex: 1;
+
+display: grid;
+
+grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+
+gap: 8px;
+
+}
+
+/* =========================
+HEAT UNITS
+========================= */
+
+.heat-unit {
+
+border-radius: 8px;
+
+transition: 0.25s ease;
+
+box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+}
+
+.heat-unit:hover {
+
+transform: translateY(-2px);
+
+}
+
+.heat-unit.available {
+
+background: linear-gradient(
+135deg,
+#28a745,
+#1d8b37
+);
+
+}
+
+.heat-unit.held {
+
+background: linear-gradient(
+135deg,
+#ffb020,
+#f59e0b
+);
+
+color: #2d2100;
+
+}
+
+.heat-unit.sold {
+
+background: linear-gradient(
+135deg,
+#ff5a36,
+#e03e1c
+);
+
+}
+
+.heat-unit.featured {
+
+background: linear-gradient(
+135deg,
+var(--forest),
+#182f7c
+);
+
+}
+
+/* =========================
+TV MODE ULTRA
+========================= */
+
+body.launch-tv-mode {
+
+background: #f4f7fc;
+
+}
+
+body.launch-tv-mode .topbar {
+
+display: none;
+
+}
+
+body.launch-tv-mode main {
+
+padding: 0;
+
+}
+
+body.launch-tv-mode .launch-view {
+
+padding: 20px;
+
+min-height: 100vh;
+
+background: #f4f7fc;
+
+}
+
+body.launch-tv-mode .launch-banner {
+
+border-radius: 18px;
+
+background: linear-gradient(
+135deg,
+var(--forest),
+#182f7c
+);
+
+box-shadow: 0 18px 60px rgba(43, 71, 154, 0.18);
+
+}
+
+body.launch-tv-mode .launch-banner h2 {
+
+font-size: clamp(42px, 4vw, 90px);
+
+}
+
+body.launch-tv-mode .launch-time {
+
+font-size: clamp(30px, 2.5vw, 70px);
+
+}
+
+body.launch-tv-mode .heatmap-card {
+
+background: transparent;
+
+border: 0;
+
+padding: 0;
+
+box-shadow: none;
+
+}
+
+body.launch-tv-mode .heatmap {
+
+grid-template-columns: repeat(
+auto-fit,
+minmax(580px, 1fr)
+);
+
+gap: 24px;
+
+}
+
+body.launch-tv-mode .heat-tower {
+
+padding: 22px;
+
+border-radius: 20px;
+
+}
+
+body.launch-tv-mode .heat-tower h4 {
+
+font-size: 28px;
+
+}
+
+body.launch-tv-mode .heat-floor-label {
+
+min-width: 120px;
+
+font-size: 18px;
+
+padding: 14px;
+
+}
+
+body.launch-tv-mode .heat-floor-units {
+
+grid-template-columns: repeat(
+auto-fit,
+minmax(120px, 1fr)
+);
+
+gap: 12px;
+
+}
+
+body.launch-tv-mode .heat-unit {
+
+min-height: 100px;
+
+font-size: 18px;
+
+border-radius: 12px;
+
+}
+
+body.launch-tv-mode .heat-unit strong {
+
+font-size: 28px;
+
+}
+
+body.launch-tv-mode .heat-unit span {
+
+font-size: 11px;
+
+}
+
+/* =========================
+TV MODE FULLSCREEN
+========================= */
+
+.launch-view:fullscreen {
+
+background: #f4f7fc;
+
+}
+
+.launch-view:fullscreen .topbar {
+
+display: none;
+
+}
+
+/* =========================
+MOBILE FIXES
+========================= */
+
+@media (max-width: 768px) {
+
+.heat-floor {
+
+```
+flex-direction: column;
+```
+
+}
+
+.heat-floor-label {
+
+```
+width: 100%;
+
+min-width: 100%;
+```
+
+}
+
+.heat-floor-units {
+
+```
+width: 100%;
+
+grid-template-columns: repeat(
+  auto-fit,
+  minmax(70px, 1fr)
+);
+```
+
+}
+
+.heat-unit {
+
+```
+min-height: 58px;
+```
+
+}
+
+.heat-unit strong {
+
+```
+font-size: 16px;
+```
+
+}
+
+}
+
+/* =========================
+SMOOTH SCROLL
+========================= */
+
+html {
+
+scroll-behavior: smooth;
+
+}
+
+/* =========================
+NICE SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+
+width: 10px;
+
+height: 10px;
+
+}
+
+::-webkit-scrollbar-track {
+
+background: #edf1f7;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+background: #c7d2e5;
+
+border-radius: 20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+background: #a8b6d0;
+
 }
